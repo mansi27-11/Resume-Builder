@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Builder - Multi Step</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  <style>
+    body {
+      background: #f9f9f9;
+    }
+    .step-wrapper {
+      display: flex;
+      min-height: 80vh;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .left-panel {
+      width: 30%;
+      background: #24315e;
+      color: white;
+      padding: 2rem;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    .left-panel h2 {
+      color: white;
+      margin-bottom: 2rem;
+    }
+    .left-panel ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .left-panel ul li {
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+    .left-panel ul li.active {
+      font-weight: bold;
+      opacity: 1;
+    }
+    .form-panel {
+      width: 70%;
+      padding: 2rem;
+    }
+    .step-section { display: none; }
+    .step-section.active { display: block; }
+    .mt-20 { margin-top: 20px; }
+    .error-message {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <div class="step-wrapper">
+        <div class="left-panel">
+          <h2 class="title is-4">Steps</h2>
+          <p>Enter your information to get closer to companies.</p>
+          <ul id="stepList">
+            <li class="active">1. Personal Information</li>
+            <li>2. Education</li>
+            <li>3. Work Experience</li>
+            <li>4. User Photo / Awards</li>
+          </ul>
+        </div>
+        <div class="form-panel">
+          <form id="multiStepForm" method="POST" action="submit.php">
+            <!-- Step 1: Personal Info -->
+            <div class="step-section active" data-step="1">
+              <h2 class="title is-4">Your Personal Information</h2>
+              <div class="columns">
+                <div class="column">
+                  <input class="input" type="text" name="first_name" placeholder="First Name" />
+                  <p class="error-message"></p>
+                </div>
+                <div class="column">
+                  <input class="input" type="text" name="last_name" placeholder="Last Name" />
+                  <p class="error-message"></p>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <input class="input" type="text" name="phone" placeholder="Phone Number" />
+                  <p class="error-message"></p>
+                </div>
+                <div class="column">
+                  <input class="input" type="email" name="email" placeholder="Email Address" />
+                  <p class="error-message"></p>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="select is-fullwidth">
+                    <select name="country">
+                      <option value="">Select Country</option>
+                      <option>India</option>
+                      <option>USA</option>
+                    </select>
+                  </div>
+                  <p class="error-message"></p>
+                </div>
+                <div class="column">
+                  <div class="select is-fullwidth">
+                    <select name="city">
+                      <option value="">Select City</option>
+                      <option>Ahmedabad</option>
+                      <option>New York</option>
+                    </select>
+                  </div>
+                  <p class="error-message"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Education -->
+            <div class="step-section" data-step="2">
+              <h2 class="title is-4">Step 2: Education</h2>
+              <input class="input" type="text" name="education" placeholder="Your Highest Qualification" />
+              <p class="error-message"></p>
+            </div>
+
+            <!-- Step 3: Work Experience -->
+            <div class="step-section" data-step="3">
+              <h2 class="title is-4">Step 3: Work Experience</h2>
+              <input class="input" type="text" name="experience" placeholder="Your Experience (e.g. 2 years at XYZ)" />
+              <p class="error-message"></p>
+            </div>
+
+            <!-- Step 4: Awards/Certificates -->
+            <div class="step-section" data-step="4">
+              <h2 class="title is-4">Step 4: Awards/Certificates</h2>
+              <div class="field">
+                <label class="label">How many awards/certificates?</label>
+                <div class="control">
+                  <div class="select">
+                    <select id="awardCount">
+                      <option value="">Select</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div id="awardInputs"></div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="buttons mt-20">
+              <button type="button" class="button is-light" id="prevBtn">Previous</button>
+              <button type="button" class="button is-link" id="nextBtn">Next</button>
+              <button type="submit" class="button is-primary" id="submitBtn" style="display: none;">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let currentStep = 1;
+    const stepList = document.querySelectorAll('#stepList li');
+    const totalSteps = document.querySelectorAll('.step-section').length;
+
+    const showStep = (step) => {
+      document.querySelectorAll('.step-section').forEach((section, index) => {
+        section.classList.remove('active');
+        if (parseInt(section.dataset.step) === step) {
+          section.classList.add('active');
+        }
+      });
+
+      stepList.forEach((li, index) => {
+        li.classList.remove('active');
+        if (index === step - 1) li.classList.add('active');
+      });
+
+      document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
+      document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'inline-block';
+      document.getElementById('submitBtn').style.display = step === totalSteps ? 'inline-block' : 'none';
+    };
+
+    const isValidPhone = (phone) => {
+      const phoneRegex = /^\d{10}$/;
+      return phoneRegex.test(phone);
+    };
+
+    const validateStep = (step) => {
+      const section = document.querySelector(`.step-section[data-step='${step}']`);
+      const inputs = section.querySelectorAll('input, select');
+      let valid = true;
+
+      inputs.forEach(input => {
+        const errorMsg = input.parentElement.querySelector('.error-message');
+        if (!input.value.trim()) {
+          input.classList.add('is-danger');
+          if (errorMsg) errorMsg.textContent = 'This field is required';
+          valid = false;
+        } else if (input.name === 'phone' && !isValidPhone(input.value.trim())) {
+          input.classList.add('is-danger');
+          if (errorMsg) errorMsg.textContent = 'Enter a valid 10-digit phone number';
+          valid = false;
+        } else {
+          input.classList.remove('is-danger');
+          if (errorMsg) errorMsg.textContent = '';
+        }
+      });
+
+      return valid;
+    };
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        currentStep++;
+        showStep(currentStep);
+      }
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      currentStep--;
+      showStep(currentStep);
+    });
+
+    document.getElementById('awardCount').addEventListener('change', function () {
+      const count = parseInt(this.value);
+      const container = document.getElementById('awardInputs');
+      container.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        container.innerHTML += `
+          <div class="field">
+            <label class="label">Award/Certificate ${i}</label>
+            <div class="control">
+              <input class="input" name="award_${i}" type="text" placeholder="Enter Award/Certificate" />
+              <p class="error-message"></p>
+            </div>
+          </div>`;
+      }
+    });
+
+    showStep(currentStep);
+  </script>
+</body>
+</html>

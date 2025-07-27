@@ -1,0 +1,356 @@
+<html>
+    <head>
+        <title>Login-here</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+        
+        <style>
+            #signupForm {
+                display: none;
+            }
+            .error-message {
+                color: red;
+                font-size: 14px;
+                margin-left: 5px;
+                display: block;
+                min-height: 18px;
+            }
+            body{
+                background-image: url("bg1.jpg");
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <p>.</p>
+        <form  action="login-resume.php" class="container" style="width: 400px;margin-top: 100px;"id="loginForm" action="login-resume.php" method="post" onsubmit="return validateloginForm()">
+            <h1 class="title has-text-centered">Login</h1>
+            <div class="field">
+                <label class="label" for="email">Email</label>
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="email" id="email" name="email" placeholder="Email" />
+                    <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                    </span>
+                    <span class="icon is-small is-right">
+                    <i class="fas fa-check"></i>
+                    </span>
+                    <span id="email-error" class="error-message"></span>
+                </p>
+            </div>
+            <div class="field">
+                <label class="label" for="password">Password</label>
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="password" id="password" name="password" placeholder="Password"/>
+                    <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                    </span>
+                    <span class="icon is-small is-right" style="pointer-events:auto; cursor:pointer;">
+                    <i class="fas fa-eye-slash toggle-password" data-target="password" id="eye1"></i>
+                    </span>
+                    <span id="password-error" class="error-message"></span>
+                </p>
+            </div>
+            <a onclick="openForgotPasswordModal()" style="color:black">Forgot Password?</a>
+            <div class="field">
+                <p class="control">
+                    <button class="button is-link is-fullwidth" type="submit">
+                        Login
+                    </button>
+                </p>
+                <p>Don't have an account? <a href="#" onclick="showSignupForm()">Sign up</a>  here</p>
+             </div>
+        </form>
+
+        <!--forgotpass panel-->
+        <div class="has-text-right" style="margin-top: -10px; margin-bottom: 20px;">
+          <a href="#" onclick="openForgotPasswordModal()" class="forgot-password-link"></a>
+        </div>
+        <div class="modal" id="forgotPasswordModal">
+          <div class="modal-background" onclick="closeForgotPasswordModal()"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Reset Password</p>
+              <button class="delete" aria-label="close" onclick="closeForgotPasswordModal()"></button>
+            </header>
+            <section class="modal-card-body">
+              <form id="forgotPasswordForm">
+                <div class="field">
+                  <label class="label">Email</label>
+                  <div class="control">
+                    <input class="input" type="email" id="reset-email" name="email" placeholder="Enter your registered email">
+                  </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="reset_password">New Password</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="password" id="reset_password" name="reset_password" placeholder="Password"/>
+                        <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                        </span>
+                        <span class="icon is-small is-right" style="pointer-events:auto; cursor:pointer;">
+                        <i class="fas fa-eye-slash toggle-password" data-target="reset_password" id="eye4"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                  <label class="label">Confirm Password</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="password" id="confirm_reset_password" name="confirm_reset_password" placeholder="Password"/>
+                        <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                        </span>
+                        <span class="icon is-small is-right" style="pointer-events:auto; cursor:pointer;">
+                        <i class="fas fa-eye-slash toggle-password" data-target="confirm_reset_password" id="eye5"></i>
+                        </span>
+                    </p>
+                </div>
+              </form>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-success" onclick="submitForgotPassword()">Submit</button>
+              <button class="button" onclick="closeForgotPasswordModal()">Cancel</button>
+            </footer>
+          </div>
+        </div>
+<!--Signup panel-->
+        <form action="signup-resume.php" class="container" style="max-width: 400px;margin-top: 50px;"id="signupForm" action="login-resume.php" method="post" onsubmit="return validateSignupForm()">
+            <h1 class="title has-text-centered">Sign Up</h1>
+            <div class="field">
+                <label for="new-email" class="label">Email</label>
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="email" id="new-email" name="new-email" placeholder="Email" />
+                    <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                    </span>
+                    <span class="icon is-small is-right">
+                    <i class="fas fa-check"></i>
+                    </span>
+                    <span id="new-email-error" class="error-message"> </span>
+                </p>
+            </div>
+            <div class="field">
+                <label for="new-password" class="label">Password</label>
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="password" id="new-password" name="new-password" placeholder="password" />
+                    <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                    </span>
+                    <span class="icon is-small is-right" style="pointer-events:auto; cursor:pointer;">
+                    <i class="fas fa-eye-slash toggle-password" data-target="new-password" id="eye2"></i>
+                    </span>
+                    <span id="new-password-error" class="error-message"></span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label for="confirm-password" class="label">Confirm Password</label>
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="password" id="confirm-password" placeholder="Confirm Password" />
+                    <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                    </span>
+                    <span class="icon is-small is-right" style="pointer-events:auto; cursor:pointer;">
+                    <i class="fas fa-eye-slash toggle-password" data-target="confirm-password" id="eye3"></i>
+                    </span>
+                    <span id="confirm-password-error" class="error-message"></span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control">
+                    <button class="button is-link is-fullwidth" type="submit">
+                        Signup
+                    </button>
+                </p>
+            <p>Already have an account? <a href="#" onclick="showLoginForm()">Login</a>  here</p>
+            </div>
+        </form>
+
+        <script>
+
+        //forgot password
+
+        function openForgotPasswordModal() {
+        document.getElementById("forgotPasswordModal").classList.add("is-active");
+        }
+
+        function closeForgotPasswordModal() {
+        document.getElementById("forgotPasswordModal").classList.remove("is-active");
+        }
+
+        function submitForgotPassword() {
+        const email = document.getElementById("reset-email").value;
+        const password = document.getElementById("reset_password").value;
+        const confirmPassword = document.getElementById("confirm_reset_password").value;
+
+        if (!validateEmail(email)) {
+            $.notify("Enter a valid email.", "error");
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            $.notify("Password must be 8 characters, include uppercase, lowercase, number, and special character.", "error");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            $.notify("Passwords do not match.", "error");
+            return;
+        }
+
+        $.post("forgot_pass.php", {
+            email: email,
+            password: password
+        }, function(response) {
+            $.notify(response.message, response.type);
+            if (response.type === "success") {
+            closeForgotPasswordModal();
+            }
+        }, "json");
+        }
+            
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get("message");
+            const type = urlParams.get("type");
+
+            if (message && type) {
+                $.notify(decodeURIComponent(message), {
+                    className: type,
+                    position: "top center",
+                    autoHideDelay: 4000
+                });
+
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        });
+
+        showLoginForm=()=>{
+            document.getElementById("loginForm").style.display="block";
+            document.getElementById("signupForm").style.display="none";
+        }
+
+        showSignupForm=()=>{
+            document.getElementById("loginForm").style.display="none";
+            document.getElementById("signupForm").style.display="block";
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    passwordInput.type = 'password';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+                });
+            });
+        });
+
+
+        
+        function validateEmail(email){
+            const re=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+        function validatePassword(password) {
+            const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+            return re.test(String(password));
+        }
+
+        function validateloginForm() {
+            let valid = true;
+
+            const requiredFields = [
+                { id: "email", msg: "*Email is required." },
+                { id: "password", msg: "*Password is required." }
+            ];
+
+            requiredFields.forEach(field => {
+                const errorSpan = document.getElementById(field.id + "-error");
+                if (errorSpan) errorSpan.textContent = "";
+            });
+
+            requiredFields.forEach(f => {
+                const value = document.getElementById(f.id).value.trim();
+                const errorSpan = document.getElementById(f.id + "-error");
+                if (!value && errorSpan) {
+                    errorSpan.textContent = f.msg;
+                    valid = false;
+                }
+            });
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (!validateEmail(email)) {
+                document.getElementById("email-error").textContent = "*Please enter a valid email address.";
+                valid = false;
+            }
+
+            if (!validatePassword(password)) {
+                document.getElementById("password-error").textContent = "*Password must be 8 characters, include uppercase, lowercase, a Special Character and a number.";
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        function validateSignupForm() {
+            let valid = true;
+
+            const requiredFields = [
+                { id: "new-email", msg: "*Email is required." },
+                { id: "new-password", msg: "*Password is required." },
+                { id: "confirm-password", msg: "*Confirm Password is required." }
+            ];
+
+            requiredFields.forEach(field => {
+                const errorSpan = document.getElementById(field.id + "-error");
+                if (errorSpan) errorSpan.textContent = "";
+            });
+
+            requiredFields.forEach(f => {
+                const value = document.getElementById(f.id).value.trim();
+                const errorSpan = document.getElementById(f.id + "-error");
+                if (!value && errorSpan) {
+                    errorSpan.textContent = f.msg;
+                    valid = false;
+                }
+            });
+
+            const newEmail = document.getElementById("new-email").value;
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            if (!validateEmail(newEmail)) {
+                document.getElementById("new-email-error").textContent = "*Please enter a valid email address.";
+                valid = false;
+            }
+            if (!validatePassword(newPassword)) {
+                document.getElementById("new-password-error").textContent = "*Password must be 8 characters, include uppercase, lowercase, a Special Character and a number.";
+                valid = false;
+            }
+            if (newPassword !== confirmPassword) {
+                document.getElementById("confirm-password-error").textContent = "*Passwords do not match.";
+                valid = false;
+            } else {
+                document.getElementById("confirm-password-error").textContent = "";
+            }
+            console.log("Signup validation?", valid);
+            return valid;
+        }
+
+        </script>
+    </body>
+</html>
+
